@@ -1,12 +1,11 @@
 # Todo Maker 2.0 - CSoC Dev Task 3
 
-
-
 ## Assignment
 
-Enable your previously made (or you can start from scratch) TODO maker App to store and retrieve data to/from provided REST APIs. This means you will have the ability to have the same data on different devices on which your app is installed.
+Enable your previously made (or you can start from scratch) TODO maker App to store and retrieve data to/from provided REST APIs. This means you will have the ability to have the same data on different devices on which your app is installed. We have created a backend server containing the API endpoints required for this application to function completely -  [https://todo-app-csoc.herokuapp.com/](https://todo-app-csoc.herokuapp.com/)
 
-REST APIs : https://todo-app-csoc.herokuapp.com/
+*The complete description of the API is mentioned at the end of this readme.*
+
 ## Tasks
 
 As mentioned above you task is to connect your previously built todo application to the APIs. In particular, you will have to implement authentication in your app and store seperate todos for each user. 
@@ -45,8 +44,173 @@ You'll have a week to complete this task. Hence, the deadline of this task is **
 - Commit and Push the changes in respective readme (either  Android.md or Flutter.md)
 - Make a Pull request and add your repo and apk link in PR template too.
 
-## Submissions
 
-<!-- Add you name in below list as -->
-<!-- - Your Name - [Repo Name](Link) [APK](APK Link) -->
-<!-- - Sanyu Daver - [Tic Tac](https://github.com/sanyud/TicTac) [APK](https://github.com/king-11/Vue-Birthday/blob/master/public/favicon.ico) -->
+## API Usage
+
+### Auth System
+All the requests made to the API (except the Login and Register endpoints) need an  **Authorization header**  with a valid token and the prefix  **Token**
+
+`Authorization: Token <token>`
+
+In order to obtain a valid token it's necessary to send a request  `POST /auth/login/`  with  **username**  and  **password**. To register a new user it's necessary to make a request  `POST /auth/register/`  with name, email, username and password.
+
+### End Points
+
+**Auth**
+
+-   `POST /auth/login/`
+
+	Takes the username and password as input, validates them and returns the **Token**, if the credentials are valid.
+
+	Request Body (Sample):
+	```
+	{
+	  "username": "string",
+	  "password": "string"
+	}
+	```
+	Response Body (Sample):
+	```
+	{
+	  "token":  "string"
+	}
+	```
+	Response Code: `200`
+
+-   `POST /auth/register/`
+
+	Register a user in Django by taking the name, email, username and password as input.
+
+	Request Body (Sample):
+	```
+	{
+	  "name": "string",
+	  "email": "user@example.com",
+	  "username": "string",
+	  "password": "string"
+	}
+	```
+	Response Body (Sample):
+	```
+	{
+	  "token":  "string"
+	}
+	```
+	Response Code: `200`
+
+-   `POST /auth/profile/`
+
+	Retrieve the id, name, email and username of the logged in user. Requires token in the Authorization header.
+
+	Response Body (Sample):
+	```
+	{
+	  "id":  1,
+	  "name":  "string",
+	  "email":  "user@example.com",
+	  "username":  "string"
+	}
+	```
+	Response Code: `200`
+
+
+**Todo**
+
+-   `GET /todo/`
+
+	Get all the Todos of the logged in user. Requires token in the Authorization header.
+
+	Response Body (Sample):
+	```
+	[
+	  {
+	    "id":  1,
+	    "title":  "string"
+	  },
+	  {
+	    "id":  2,
+	    "title":  "string"
+	  }
+	]
+	```
+	Response Code: `200`
+
+-   `POST /todo/create/`
+
+	Create a Todo entry for the logged in user. Requires token in the Authorization header.
+
+	Request Body (Sample):
+	```
+	{
+	  "title": "string"
+	}
+	```
+	Response Code: `200`
+
+-   `GET /todo/{id}/`
+
+	Get the Todo of the logged in user with given id. Requires token in the Authorization header.
+
+	Response Body (Sample):
+	```
+	{
+	  "id":  1,
+	  "title":  "string"
+	}
+	```
+	Response Code: `200`
+
+-   `PUT /todo/{id}/`
+
+	Change the title of the Todo with given id, and get the new title as response. Requires token in the Authorization header.
+
+	Request Body (Sample):
+	```
+	{
+	  "title": "string"
+	}
+	```
+	Response Body (Sample):
+	```
+	{
+	  "id":  1,
+	  "title":  "string"
+	}
+	```
+
+-   `PATCH /todo/{id}/`
+
+	Change the title of the Todo with given id, and get the new title as response. Requires token in the Authorization header.
+
+	Request Body (Sample):
+	```
+	{
+	  "title": "string"
+	}
+	```
+	Response Body (Sample):
+	```
+	{
+	  "id":  1,
+	  "title":  "string"
+	}
+	```
+
+-   `DELETE /todo/{id}/`
+
+	Delete the Todo with given id. Requires token in the Authorization header.
+
+	Response Code: `204`
+
+All the requests must be prefixed with the base URL of the API.
+Example: for login the `POST` request must be sent to `https://todo-app-csoc.herokuapp.com/auth/login/` with the required details. **Make sure to append a slash at the end, otherwise you may encounter an error while making the `POST` request.**
+
+### Documentation
+Swagger generated docs: [https://todo-app-csoc.herokuapp.com/](https://todo-app-csoc.herokuapp.com/)
+ReDoc generated docs: [https://todo-app-csoc.herokuapp.com/redoc/](https://todo-app-csoc.herokuapp.com/redoc/)
+
+### Testing the API
+
+The API can be tested by going to the deployed URL: [https://todo-app-csoc.herokuapp.com/](https://todo-app-csoc.herokuapp.com/), clicking the "Try it out" button after selecting the endpoint and finally executing it along with the Response Body (if required).
+
+For testing the endpoints which require **Token** in the Authorization header, you can click on the "Authorize" button, write the Authorization token as  `Token <token>` (which you have obtained from the `auth/login/` endpoint) and finally click on "Authorize". Thereafter, all the requests made to any endpoint will have the Token in the Authorization Header.
