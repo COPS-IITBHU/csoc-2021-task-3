@@ -6,6 +6,7 @@
 
 Enable your previously made (or you can start from scratch) TODO maker App to store and retrieve data to/from provided REST APIs. This means you will have the ability to have the same data on different devices on which your app is installed.
 
+REST APIs : https://todo-app-csoc.herokuapp.com/
 ## Tasks
 
 As mentioned above you task is to connect your previously built todo application to the APIs. In particular, you will have to implement authentication in your app and store seperate todos for each user. 
